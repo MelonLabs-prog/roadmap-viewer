@@ -1,6 +1,6 @@
 // --- Step 1: PASTE YOUR SUPABASE CREDENTIALS HERE ---
-const SUPABASE_URL = 'https://llokephtjuunizcrlrza.supabase.co'; // Replace with your Project URL
-const SUPABASE_ANON_KEY = 'sb_publishable_kXHwfHjUwXqKSP1SecLzjg__3aKxP6G'; // Replace with your anon (public) key
+const SUPABASE_URL = 'YOUR_SUPABASE_URL'; // Replace with your Project URL
+const SUPABASE_ANON_KEY = 'YOUR_SUPABASE_ANON_KEY'; // Replace with your anon (public) key
 
 // --- Helper Functions ---
 const calculateDaysBetween = (start, end) => {
@@ -21,7 +21,8 @@ const calculateTimeLeft = (deadline) => {
 const viewerContainer = document.getElementById('roadmap-viewer');
 
 // Initialize the Supabase client
-const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+// The global 'supabase' object is available because of the script tag in the viewer's index.html
+const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
 // Function to fetch and render the latest roadmap
 async function loadAndRenderRoadmap() {
@@ -31,7 +32,7 @@ async function loadAndRenderRoadmap() {
         }
 
         // Fetch the single most recent row from the 'roadmaps' table
-        const { data, error } = await supabase
+        const { data, error } = await supabaseClient
             .from('roadmaps')
             .select('data') // Select only the 'data' column which contains our JSON
             .order('created_at', { ascending: false }) // Order by creation date to get the latest
