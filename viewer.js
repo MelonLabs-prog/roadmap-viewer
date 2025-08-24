@@ -1,3 +1,4 @@
+
 // --- Step 1: PASTE YOUR SUPABASE CREDENTIALS HERE ---
 const SUPABASE_URL = 'https://llokephtjuunizcrlrza.supabase.co'; // Replace with your Project URL
 const SUPABASE_ANON_KEY = 'sb_publishable_kXHwfHjUwXqKSP1SecLzjg__3aKxP6G'; // Replace with your anon (public) key
