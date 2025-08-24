@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Live Project Roadmap</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="viewer.css">
+</head>
+<body>
+    <div id="roadmap-viewer">
+        <div class="loading-state">
+            <h2>Loading Latest Roadmap...</h2>
+            <p>Please wait a moment.</p>
+        </div>
+    </div>
+
+    <!-- Load the Supabase Client Library -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    
+    <!-- Load our custom script -->
+    <script type="module" src="viewer.js"></script>
+</body>
+</html>
