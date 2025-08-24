@@ -32,22 +32,33 @@ async function loadAndRenderRoadmap() {
         }
 
         // Fetch the most recent roadmap entry.
-        // We remove .single() to gracefully handle cases where the table is empty.
         const { data: roadmapArray, error } = await supabaseClient
             .from('roadmaps')
             .select('data') // Select only the 'data' column which contains our JSON
             .order('created_at', { ascending: false }) // Order by creation date to get the latest
-            .limit(1); // We only want one, which will be the first item in an array.
+            .limit(1); // We only want the latest one.
 
         if (error) throw error;
 
         // Check if we received any data.
         if (roadmapArray && roadmapArray.length > 0 && roadmapArray[0].data) {
-            // If we have at least one record, render the data from the first one.
-            renderRoadmap(roadmapArray[0].data);
+            const rawData = roadmapArray[0].data;
+
+            // This makes the viewer more robust. It checks if the roadmap data is nested
+            // inside a `roadmapData` property, which is a common result of a Make.com mapping.
+            // If it finds it, it uses the nested data. Otherwise, it uses the raw data.
+            const finalRoadmapData = rawData.roadmapData ? rawData.roadmapData : rawData;
+
+            // Final check to ensure we have a valid roadmap object before trying to render.
+            if (finalRoadmapData && finalRoadmapData.title && finalRoadmapData.phases) {
+                renderRoadmap(finalRoadmapData);
+            } else {
+                // This error means we found a record, but the data inside is not in a format we recognize.
+                throw new Error("The data format in the database is incorrect. Please check the 'data' column in your Supabase 'roadmaps' table to ensure it contains a valid roadmap object.");
+            }
         } else {
-            // If the table is empty or the latest record has no data, show a helpful message.
-            throw new Error("No roadmap data found in the database. Have you successfully synced from the main app yet?");
+            // This error means the 'roadmaps' table is empty.
+            throw new Error("No roadmap data found in the database. Have you successfully synced from the main app yet? Please check your Make.com scenario history for any errors.");
         }
 
     } catch (error) {
