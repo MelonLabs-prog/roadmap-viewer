@@ -21,7 +21,7 @@ const calculateTimeLeft = (deadline) => {
 const viewerContainer = document.getElementById('roadmap-viewer');
 
 // Initialize the Supabase client
-// The global 'supabase' object is available because of the script tag in the viewer's index.html
+// The global 'supabase' object is available because of the script tag in index.html
 const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
 // Function to fetch and render the latest roadmap
@@ -31,20 +31,23 @@ async function loadAndRenderRoadmap() {
              throw new Error("Supabase URL is not configured in viewer.js. Please paste your Supabase credentials.");
         }
 
-        // Fetch the single most recent row from the 'roadmaps' table
-        const { data, error } = await supabaseClient
+        // Fetch the most recent roadmap entry.
+        // We remove .single() to gracefully handle cases where the table is empty.
+        const { data: roadmapArray, error } = await supabaseClient
             .from('roadmaps')
             .select('data') // Select only the 'data' column which contains our JSON
             .order('created_at', { ascending: false }) // Order by creation date to get the latest
-            .limit(1) // We only want one
-            .single(); // Expect a single result
+            .limit(1); // We only want one, which will be the first item in an array.
 
         if (error) throw error;
 
-        if (data && data.data) {
-            renderRoadmap(data.data);
+        // Check if we received any data.
+        if (roadmapArray && roadmapArray.length > 0 && roadmapArray[0].data) {
+            // If we have at least one record, render the data from the first one.
+            renderRoadmap(roadmapArray[0].data);
         } else {
-            throw new Error("No roadmap data found in the database. Have you synced from the PWA yet?");
+            // If the table is empty or the latest record has no data, show a helpful message.
+            throw new Error("No roadmap data found in the database. Have you successfully synced from the main app yet?");
         }
 
     } catch (error) {
@@ -112,4 +115,3 @@ function renderRoadmap(roadmapData) {
 
 // Run the function when the page loads
 document.addEventListener('DOMContentLoaded', loadAndRenderRoadmap);
-
