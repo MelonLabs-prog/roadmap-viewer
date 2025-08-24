@@ -1,4 +1,3 @@
-
 // --- Step 1: PASTE YOUR SUPABASE CREDENTIALS HERE ---
 const SUPABASE_URL = 'https://llokephtjuunizcrlrza.supabase.co'; // Replace with your Project URL
 const SUPABASE_ANON_KEY = 'sb_publishable_kXHwfHjUwXqKSP1SecLzjg__3aKxP6G'; // Replace with your anon (public) key
@@ -28,7 +27,7 @@ const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 // Function to fetch and render the latest roadmap
 async function loadAndRenderRoadmap() {
     try {
-        if (!SUPABASE_URL || SUPABASE_URL === 'YOUR_SUPABASE_URL') {
+        if (!SUPABASE_URL || SUPABASE_URL.includes('YOUR_SUPABASE_URL')) {
              throw new Error("Supabase URL is not configured in viewer.js. Please paste your Supabase credentials.");
         }
 
