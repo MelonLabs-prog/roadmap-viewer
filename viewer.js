@@ -42,7 +42,18 @@ async function loadAndRenderRoadmap() {
 
         // Check if we received any data.
         if (roadmapArray && roadmapArray.length > 0 && roadmapArray[0].data) {
-            const rawData = roadmapArray[0].data;
+            let rawData = roadmapArray[0].data;
+
+            // Defensive programming: If the data from Supabase is a string, parse it.
+            // This can happen depending on how Make.com inserts the data.
+            if (typeof rawData === 'string') {
+                try {
+                    rawData = JSON.parse(rawData);
+                } catch (e) {
+                    console.error("Failed to parse roadmap data string:", e);
+                    throw new Error("The data in the database is not valid JSON. Please check the 'data' column in your Supabase 'roadmaps' table.");
+                }
+            }
 
             // This makes the viewer more robust. It checks if the roadmap data is nested
             // inside a `roadmapData` property, which is a common result of a Make.com mapping.
